@@ -5,7 +5,7 @@
 
 from passport import eddimage, wozardry, a2rimage
 from passport.loggers import DefaultLogger, DebugLogger
-from passport import Crack, Verify, Convert
+from passport import Crack, Verify, Convert, RawConvert
 from passport.strings import __date__, STRINGS
 import argparse
 import os.path
@@ -61,6 +61,15 @@ class CommandConvert(BaseCommand):
         BaseCommand.setup(self, subparser,
                           description="Convert a disk image to .woz format")
 
+class CommandRawConvert(BaseCommand):
+    def __init__(self):
+        BaseCommand.__init__(self, "rawconvert")
+        self.processor = RawConvert
+
+    def setup(self, subparser):
+        BaseCommand.setup(self, subparser,
+                          description="Convert a disk image to .woz format with minimal processing")
+
 class CommandCrack(BaseCommand):
     def __init__(self):
         BaseCommand.__init__(self, "crack")
@@ -71,7 +80,7 @@ class CommandCrack(BaseCommand):
                           description="Convert a disk image to .dsk format")
 
 if __name__ == "__main__":
-    cmds = [CommandVerify(), CommandConvert(), CommandCrack()]
+    cmds = [CommandVerify(), CommandConvert(), CommandRawConvert(), CommandCrack()]
     parser = argparse.ArgumentParser(prog=__progname__,
                                      description="""A multi-purpose tool for working with copy-protected Apple II disk images.
 

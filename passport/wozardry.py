@@ -144,13 +144,35 @@ def raise_if(cond, e, s=""):
     if cond: raise e(s)
 
 class Track:
-    def __init__(self, bits, bit_count):
+    def __init__(self, bits, bit_count, est_bit_len=None):
         self.bits = bits
         while len(self.bits) > bit_count:
             self.bits.pop()
         self.bit_count = bit_count
         self.bit_index = 0
         self.revolutions = 0
+        self.fixed = False
+        self.est_bit_len = est_bit_len
+
+    def fix(self, max_match_dist=8000, match_range=1000):
+        if self.fixed:
+            return
+        if not self.est_bit_len:
+            return
+
+        ref_range = self.bits[:match_range]
+
+        def goodness(i):
+            return sum(a == b for a, b in zip(ref_range, self.bits[i:i+match_range]))
+        if (wrap_point := self.bits.find(ref_range, self.est_bit_len - max_match_dist)) == -1:
+            wrap_point = max(range(self.est_bit_len - max_match_dist, self.est_bit_len + max_match_dist),
+                    key=goodness)
+        del self.bits[wrap_point:]
+        while self.bit_index > wrap_point:
+            self.bit_index -= wrap_point
+            self.revolutions += 1
+        self.fixed = True
+        self.est_bit_len = wrap_point
 
     def bit(self):
         b = self.bits[self.bit_index] and 1 or 0
@@ -522,8 +544,8 @@ class WozDiskImage:
             compatible_hardware_raw = to_uint16(compatible_hardware_bitfield)
             required_ram_raw = to_uint16(self.info["required_ram"])
             if self.tracks:
-                largest_bit_count = max([track.bit_count for track in self.tracks])
-                largest_block_count = (((largest_bit_count+7)//8)+511)//512
+                largest_bit_len = max([track.bit_count for track in self.tracks])
+                largest_block_count = (((largest_bit_len+7)//8)+511)//512
             else:
                 largest_block_count = 0
             largest_track_raw = to_uint16(largest_block_count)
