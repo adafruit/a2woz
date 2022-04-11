@@ -154,23 +154,32 @@ class Track:
         self.fixed = False
         self.est_bit_len = est_bit_len
 
-    def fix(self, max_match_dist=8000, match_range=1000):
+    def fix(self, max_match_dist=8000, match_range=4000):
         if self.fixed:
             return
         if not self.est_bit_len:
             return
 
-        ref_range = self.bits[:match_range]
+        print(f"fixing track with {self.est_bit_len=} {len(self.bits)=}")
 
+        ref_range = self.bits[:match_range]
+        #print(f"{ref_range=}")
         def goodness(i):
             return sum(a == b for a, b in zip(ref_range, self.bits[i:i+match_range]))
         if (wrap_point := self.bits.find(ref_range, self.est_bit_len - max_match_dist)) == -1:
+        #if (wrap_point := self.bits.find(ref_range, 1)) == -1:
             wrap_point = max(range(self.est_bit_len - max_match_dist, self.est_bit_len + max_match_dist),
                     key=goodness)
+            print(f"best wrap point {wrap_point=} {goodness(wrap_point)/match_range=}")
+        else:
+            print(f"perefect wrap point {wrap_point=}")
+
         del self.bits[wrap_point:]
+        print(f"rewinding {self.bit_index=} {self.revolutions=}")
         while self.bit_index > wrap_point:
             self.bit_index -= wrap_point
             self.revolutions += 1
+        print(f"rewound {self.bit_index=} {self.revolutions=}")
         self.fixed = True
         self.est_bit_len = wrap_point
 
