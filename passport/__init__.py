@@ -734,6 +734,7 @@ class RawConvert(BasePassportProcessor):
                 physical_track_num = logical_track_num + fractional_track
                 track = self.g.disk_image.seek(physical_track_num)
                 if track and track.bits:
+                    print(f"{physical_track_num=}")
                     print("Track bits before", len(track.bits))
                     track.fix()
                     print("Track bits after", len(track.bits))

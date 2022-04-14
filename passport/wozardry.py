@@ -143,6 +143,19 @@ def from_intish(v, errorClass, errorString):
 def raise_if(cond, e, s=""):
     if cond: raise e(s)
 
+FF40x5 = bitarray.bitarray('1111111100' * 5)
+FF32x8 = bitarray.bitarray('111111110' * 8)
+
+def bitarray_count_occurrence(haystack, needle):
+    start = 0
+    count = 0
+    while start != -1:
+        start = haystack.find(needle, start)
+        if start != -1:
+            count += 1
+            start += 1
+    return count
+
 class Track:
     def __init__(self, bits, bit_count, est_bit_len=None):
         self.bits = bits
@@ -160,19 +173,29 @@ class Track:
         if not self.est_bit_len:
             return
 
-        print(f"fixing track with {self.est_bit_len=} {len(self.bits)=}")
+        ff40 = bitarray_count_occurrence(self.bits, FF40x5)
+        ff32 = bitarray_count_occurrence(self.bits, FF32x8)
+        print(f"fixing track with {self.est_bit_len=} {len(self.bits)=} {ff40=} {ff32=}")
+        if (ff32 + ff40) < 4:
+            return
 
-        ref_range = self.bits[:match_range]
         #print(f"{ref_range=}")
-        def goodness(i):
-            return sum(a == b for a, b in zip(ref_range, self.bits[i:i+match_range]))
-        if (wrap_point := self.bits.find(ref_range, self.est_bit_len - max_match_dist)) == -1:
-        #if (wrap_point := self.bits.find(ref_range, 1)) == -1:
+        wrap_point = -1
+        for i in range(match_range):
+            ref_range = self.bits[i:i+match_range]
+            wrap_point = self.bits.find(ref_range, i + self.est_bit_len - max_match_dist)
+            if wrap_point != -1:
+                print(f"perfect wrap point {i=} {wrap_point=}")
+                wrap_point -= i
+                break
+        else:
+            def goodness(i):
+                return sum(a == b for a, b in zip(ref_range, self.bits[i:i+match_range]))
             wrap_point = max(range(self.est_bit_len - max_match_dist, self.est_bit_len + max_match_dist),
                     key=goodness)
             print(f"best wrap point {wrap_point=} {goodness(wrap_point)/match_range=}")
-        else:
-            print(f"perefect wrap point {wrap_point=}")
+        print(f"{self.bits[i:i+100]}")
+        print(f"{self.bits[wrap_point:wrap_point+100]}")
 
         del self.bits[wrap_point:]
         print(f"rewinding {self.bit_index=} {self.revolutions=}")
