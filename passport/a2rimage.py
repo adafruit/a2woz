@@ -27,7 +27,6 @@ class A2RImage:
         bits = bitarray.bitarray()
         if not flux_record or flux_record["capture_type"] != a2rchery.kCaptureTiming:
             return bits
-        print(flux_record['data_length'], flux_record['tick_count'])
         tick_count = flux_record['tick_count']
         fluxxen = flux_record["data"][1:]
         speed = self.speed

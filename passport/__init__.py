@@ -734,12 +734,7 @@ class RawConvert(BasePassportProcessor):
                 physical_track_num = logical_track_num + fractional_track
                 track = self.g.disk_image.seek(physical_track_num)
                 if track and track.bits:
-                    print(f"{physical_track_num=}")
-                    print("Track bits before", len(track.bits))
                     track.fix()
-                    print("Track bits after", len(track.bits))
-                    global track_
-                    track_ = track
                     self.g.logger.debug("Writing to track %s + %.2f for %d bits" % (hex(self.g.track), fractional_track, len(track.bits)))
                     self.output_tracks[physical_track_num] = wozardry.Track(track.bits, len(track.bits))
 

@@ -11,6 +11,7 @@ import io
 import json
 import itertools
 import os
+import re
 import sys
 
 __version__ = "2.0-beta" # https://semver.org
@@ -143,8 +144,9 @@ def from_intish(v, errorClass, errorString):
 def raise_if(cond, e, s=""):
     if cond: raise e(s)
 
+sync_rx = re.compile(r"(1111111100?){2,}")
 FF40x5 = bitarray.bitarray('1111111100' * 5)
-FF32x8 = bitarray.bitarray('111111110' * 8)
+FF36x8 = bitarray.bitarray('111111110' * 8)
 
 def bitarray_count_occurrence(haystack, needle):
     start = 0
@@ -155,6 +157,10 @@ def bitarray_count_occurrence(haystack, needle):
             count += 1
             start += 1
     return count
+
+def find_all_sync(haystack, pos=0, endpos=sys.maxsize):
+    haystack = haystack.to01()
+    return sync_rx.finditer(haystack, pos, endpos)
 
 class Track:
     def __init__(self, bits, bit_count, est_bit_len=None):
@@ -170,39 +176,41 @@ class Track:
     def fix(self, max_match_dist=8000, match_range=4000):
         if self.fixed:
             return
-        if not self.est_bit_len:
-            return
 
-        ff40 = bitarray_count_occurrence(self.bits, FF40x5)
-        ff32 = bitarray_count_occurrence(self.bits, FF32x8)
-        print(f"fixing track with {self.est_bit_len=} {len(self.bits)=} {ff40=} {ff32=}")
-        if (ff32 + ff40) < 4:
-            return
+        # A 300RPM floppy drive has room for 50,000 bits at 4us, so if
+        # the estimated bit length is not known, assume it.
+        est_bit_len = self.est_bit_len or 50000
 
-        #print(f"{ref_range=}")
-        wrap_point = -1
-        for i in range(match_range):
-            ref_range = self.bits[i:i+match_range]
-            wrap_point = self.bits.find(ref_range, i + self.est_bit_len - max_match_dist)
-            if wrap_point != -1:
-                print(f"perfect wrap point {i=} {wrap_point=}")
-                wrap_point -= i
-                break
-        else:
-            def goodness(i):
-                return sum(a == b for a, b in zip(ref_range, self.bits[i:i+match_range]))
-            wrap_point = max(range(self.est_bit_len - max_match_dist, self.est_bit_len + max_match_dist),
-                    key=goodness)
-            print(f"best wrap point {wrap_point=} {goodness(wrap_point)/match_range=}")
-        print(f"{self.bits[i:i+100]}")
-        print(f"{self.bits[wrap_point:wrap_point+100]}")
+        # Find all possible sync points.  These are any combination of two
+        # or more of the FF36 / FF40 codes.
+        sync_pos = [match.start() for match in find_all_sync(self.bits)]
 
-        del self.bits[wrap_point:]
-        print(f"rewinding {self.bit_index=} {self.revolutions=}")
+        # Go through all possible splice pairs and find the best match.
+        # They're ranked first on the number of bit matches; in the case of
+        # a tie, the one with length closest to the nominal length is preferred
+        # and then the one closest to the start of the revolution
+        splice_points = [((0,0,0), 0, est_bit_len)]
+        for p1 in sync_pos:
+            if p1 > max_match_dist: continue
+            ref_range = self.bits[p1:p1+match_range]
+            for p2 in sync_pos:
+                if abs(p2-self.est_bit_len) > max_match_dist: continue
+                comp_range = self.bits[p2:p2+match_range]
+
+                similarity = sum(a == b for a, b in zip(ref_range, comp_range)) / match_range
+                abs_len_diff = abs((p2-p1) - est_bit_len)
+                splice_points.append(((similarity,-abs_len_diff,-p1), p1, p2))
+
+        splice_points.sort()
+        score, p1, p2 = splice_points[-1]
+
+        wrap_point = p2 - p1
+
+        del self.bits[p2:]
+        del self.bits[:p1]
         while self.bit_index > wrap_point:
             self.bit_index -= wrap_point
             self.revolutions += 1
-        print(f"rewound {self.bit_index=} {self.revolutions=}")
         self.fixed = True
         self.est_bit_len = wrap_point
 
