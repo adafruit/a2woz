@@ -1,8 +1,7 @@
-from passport.loggers import *
-from passport.strings import *
-from passport.constants import *
-from passport.util import *
-from passport import wozardry
+from .loggers import *
+from .strings import *
+from .util import *
+from . import wozardry
 import bitarray
 import io
 import json
@@ -42,7 +41,6 @@ class BasePassportProcessor: # base class
 
 class RawConvert(BasePassportProcessor):
     def run(self):
-        self.g.logger.PrintByID("header")
         self.g.logger.PrintByID("reading", {"filename":self.g.filename})
 
         self.tracks = {}

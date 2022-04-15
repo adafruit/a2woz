@@ -1,4 +1,4 @@
-from passport.loggers import BaseLogger
+from . import BaseLogger
 
 class SilentLogger(BaseLogger):
     """print nothing"""

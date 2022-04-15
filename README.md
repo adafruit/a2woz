@@ -1,15 +1,31 @@
-# woz rawconvert (was passport.py)
+# a2woz - minimally process a2r files into woz files
 
 ## Usage
+One-time installation:
 ```shell
-python3 -mpassport input.a2r output.woz
+pip install https://github.com/adafruit/a2woz
+```
+
+Convert a single file:
+```shell
+a2woz input.a2r
+```
+
+Convert multiple files, with output directory:
+```shell
+a2woz --output-dir out *.a2r
+```
+
+Full usage:
+```shell
+a2woz --help
 ```
 
 ## Theory of a2r to woz raw conversion:
 
 The a2r file contains "1 and a fraction" revolutions, for each track. (It can actually contain multiple revolutions, but ignore that for now)
 
-`passport.py rawconvert` takes a revolution, then finds all the "sync points".
+`a2woz` takes a revolution, then finds all the "sync points".
 "sync points" are a sequence of 2 or more "FF36" or "FF40", which are used
 by the floppy interface controller to synchronize with data on the floppy.
 

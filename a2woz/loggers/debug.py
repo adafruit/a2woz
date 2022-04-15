@@ -1,4 +1,4 @@
-from passport.loggers.default import DefaultLogger
+from .default import DefaultLogger
 import sys
 
 class DebugLogger(DefaultLogger):

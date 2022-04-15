@@ -1,1 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Kattni Rembor, written for Adafruit Industries
+#
+# SPDX-License-Identifier: MIT
 __pycache__
+*.egg-info
+a2woz/__version__.py
+build

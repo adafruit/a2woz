@@ -1,4 +1,4 @@
-from passport.wozardry import Track, raise_if
+from .wozardry import Track, raise_if
 import bitarray
 import json
 

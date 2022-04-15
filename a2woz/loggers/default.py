@@ -1,5 +1,5 @@
-from passport.loggers import BaseLogger
-from passport.strings import STRINGS
+from . import BaseLogger
+from ..strings import STRINGS
 import sys
 
 class DefaultLogger(BaseLogger):

@@ -1,5 +1,5 @@
-from passport.wozardry import Track, raise_if
-from passport import a2rchery
+from .wozardry import Track, raise_if
+from . import a2rchery
 import bitarray
 import collections
 
