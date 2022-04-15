@@ -1,6 +1,11 @@
 # woz rawconvert (was passport.py)
 
-# Theory of a2r to woz raw conversion:
+## Usage
+```shell
+python3 passport.py input.a2r output.woz
+```
+
+## Theory of a2r to woz raw conversion:
 
 The a2r file contains "1 and a fraction" revolutions, for each track. (It can actually contain multiple revolutions, but ignore that for now)
 
@@ -26,20 +31,16 @@ This has worked for a small set of a2r files:
  * DOS 3.3 System Master [1983] - Disk 1, Side A.a2r (cowgod from archive.org)
  * skyfox.a2r (jepler from fluxengine)
 
-This method doesn't deal with "fake bits"/"weak bits" properly. It could be improved by:
-
- * Trying different revolutions, if available in the a2r file, hopefully
-   finding a single best revolution
- * Properly handling "weak bits" by locating stretches that look like they are
-   not valid flux (due to sequences of 3+ zeros), and setting all the bits in
-   the region to 0. A proper emulator then generates fake flux for these
-   sections of the track.
-
 
 ## TODO
 
- * Rip out everything that is not 'rawconvert'
  * Come up with an awesome name
  * Share with the world
  * Try more a2rs
-
+ * Graft in the greaseweazle flux readers & use them as input formats
+ * Try different revolutions, if available in the a2r file, hopefully
+   finding a single best revolution
+ * Properly handle "weak bits" by locating stretches that look like they are
+   not valid flux (due to sequences of 3+ zeros), and setting all the bits in
+   the region to 0. A proper emulator then generates fake flux for these
+   sections of the track.
