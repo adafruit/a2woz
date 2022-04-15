@@ -50,7 +50,6 @@ This has worked for a small set of a2r files:
 
 ## TODO
 
- * Come up with an awesome name
  * Share with the world
  * Try more a2rs
  * Graft in the greaseweazle flux readers & use them as input formats
@@ -60,3 +59,7 @@ This has worked for a small set of a2r files:
    not valid flux (due to sequences of 3+ zeros), and setting all the bits in
    the region to 0. A proper emulator then generates fake flux for these
    sections of the track.
+
+## Credits
+
+a2woz is based on passport.py, a2rchery, and wozardry from [@a2-4am](https://github.com/a2-4am).
