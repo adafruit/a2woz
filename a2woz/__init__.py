@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 from .loggers import *
 from .strings import *
 from .util import *

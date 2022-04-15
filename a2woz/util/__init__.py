@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 __all__ = ["find", "decode44", "concat_track"]
 
 def decode44(n1, n2):

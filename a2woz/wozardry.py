@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 # (c) 2018-9 by 4am
 # MIT-licensed
 

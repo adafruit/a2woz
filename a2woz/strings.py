@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 try:
     from .__version__ import version
 except:

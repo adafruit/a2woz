@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 from .wozardry import Track, raise_if
 import bitarray
 import json

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2019 4am
+#
+# SPDX-License-Identifier: MIT
+
 class BaseLogger: # base class
     def __init__(self, g):
         self.g = g

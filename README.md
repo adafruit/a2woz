@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 Jeff Epler for Adafruit Industries
+
+SPDX-License-Identifier: MIT
+-->
+
 # a2woz - minimally process a2r files into woz files
 
 ## Usage
