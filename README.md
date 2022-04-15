@@ -4,8 +4,7 @@ SPDX-FileCopyrightText: 2022 Jeff Epler for Adafruit Industries
 SPDX-License-Identifier: MIT
 -->
 
-[![Test wwvbgen](https://github.com/adafruit/a2woz/actions/workflows/build.yml/badge.svg)](https://github.com/adafruit/a2woz/actions/workflows/build.yml)
-[![PyPI](https://img.shields.io/pypi/v/a2woz)](https://pypi.org/project/a2woz)
+[![Build CI](https://github.com/adafruit/a2woz/actions/workflows/build.yml/badge.svg)](https://github.com/adafruit/a2woz/actions/workflows/build.yml)[![PyPI](https://img.shields.io/pypi/v/a2woz)](https://pypi.org/project/a2woz)
 
 # a2woz - minimally process a2r files into woz files
 
