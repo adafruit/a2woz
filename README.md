@@ -2,7 +2,7 @@
 
 ## Usage
 ```shell
-python3 passport.py input.a2r output.woz
+python3 -mpassport input.a2r output.woz
 ```
 
 ## Theory of a2r to woz raw conversion:
