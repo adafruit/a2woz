@@ -59,7 +59,6 @@ This has worked for a small set of a2r files:
 
 ## TODO
 
- * Share with the world
  * Try more a2rs
  * Graft in the greaseweazle flux readers & use them as input formats
  * Try different revolutions, if available in the a2r file, hopefully
